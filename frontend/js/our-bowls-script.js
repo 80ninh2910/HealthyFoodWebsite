@@ -127,7 +127,15 @@ function downloadRecipe(bowlName) {
     `6. Add sauce and enjoy!\n\n` +
     `💡 **Pro tip:** For best results, follow our exact cooking times!`
 
-  alert(recipeInfo)
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(recipeInfo));
+    element.setAttribute('download', `${bowlName}-recipe.txt`);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+    document.body.removeChild(element);
 }
 
 // View Full Menu Function
