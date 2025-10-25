@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EatClean Admin — Dashboard</title>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">
+          <!-- simple SVG icon -->
+          <img src="../images/index/image-removebg-preview (36).png">
+          <p class="muted">Admin</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active"><span class="dot"></span>Dashboard</button>
+        <button class="nav-item"><span class="dot"></span>Orders</button>
+        <button class="nav-item"><span class="dot"></span>Customers</button>
+        <button class="nav-item"><span class="dot"></span>Menu</button>
+        <button class="nav-item"><span class="dot"></span>Analytics</button>
+        <button class="nav-item"><span class="dot"></span>Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="profile">
+          <img src="https://i.pravatar.cc/48?img=12" alt="admin">
+          <div>
+            <strong>Manager</strong>
+            <div class="muted">admin@eatclean.vn</div>
+          </div>
+        </div>
+        <button class="ghost">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="search">
+          <input type="search" id="search" placeholder="Search data, users, or orders..." />
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+          <div class="notif icon-btn" title="Notifications">🔔 <span class="badge" id="notif-count">3</span></div>
+          <img class="avatar" src="https://i.pravatar.cc/36?img=32" alt="me">
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="content">
+        <!-- KPI row -->
+        <div class="kpis">
+          <div class="card kpi">
+            <div class="kpi-title">Total Sales</div>
+            <div class="kpi-value" id="kpi-sales">$<span id="kpi-sales-val">350K</span></div>
+            <div class="kpi-meta">Last 7 days • <span class="up">+10.4%</span></div>
+          </div>
+
+          <div class="card kpi">
+            <div class="kpi-title">Total Orders</div>
+            <div class="kpi-value"><span id="kpi-orders-val">10.7K</span></div>
+            <div class="kpi-meta">Last 7 days • <span class="up">+14.4%</span></div>
+          </div>
+
+          <div class="card kpi">
+            <div class="kpi-title">Pending & Cancelled</div>
+            <div class="kpi-value"><span id="kpi-pending">509</span> / <span id="kpi-cancel">94</span></div>
+            <div class="kpi-meta">Last 7 days</div>
+          </div>
+
+          <div class="card kpi">
+            <div class="kpi-title">Active Users</div>
+            <div class="kpi-value" id="kpi-users">21.5K</div>
+            <div class="kpi-meta">Users in last 30 minutes</div>
+          </div>
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="grid">
+          <!-- left column -->
+          <div class="col-left">
+            <div class="card chart-card">
+              <div class="card-head">
+                <h3>Report for this week</h3>
+                <div class="segmented">
+                  <button class="seg-btn active" data-period="this">This week</button>
+                  <button class="seg-btn" data-period="last">Last week</button>
+                </div>
+              </div>
+              <canvas id="lineChart" height="160"></canvas>
+            </div>
+            <br/>
+            <div class="card list-card">
+              <h3>Top Products</h3>
+              <ul id="top-products">
+                <!-- filled by JS -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- right column (summary / recipe preview) -->
+          <aside class="col-right">
+            <div class="card summary-card">
+              <h3>Your healthy bowl</h3>
+              <div class="summary-empty">
+                <div class="empty-illustration">🥣</div>
+                <p>Pick your favorite ingredients to calculate the calories</p>
+              </div>
+            </div>
+            <br/>
+            <div class="card sales-by-country">
+              <h3>Sales by Country</h3>
+              <canvas id="barChart" height="140"></canvas>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Transactions table -->
+        <div class="card table-card">
+          <div class="card-head">
+            <h3>Recent Transactions</h3>
+            <div>
+              <button class="ghost small" id="exportBtn">Export</button>
+              <button class="ghost small" id="filterBtn">Filter</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="tx-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Id Customer</th>
+                  <th>Order Date</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- footer / tiny -->
+      <footer class="footer">
+        © <span id="year"></span> EatClean • Dashboard
+      </footer>
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "kpis": {
+    "sales": "350K",
+    "orders": "10.7K",
+    "pending": 509,
+    "cancelled": 94,
+    "activeUsers": "21.5K"
+  },
+  "topProducts": [
+    {
+      "title": "Half beef steak, sweet potato",
+      "price": "$12.50",
+      "img": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80"
+    },
+    {
+      "title": "Salmon sweet potato",
+      "price": "$11.20",
+      "img": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80"
+    },
+    {
+      "title": "Vegan bowl",
+      "price": "$9.50",
+      "img": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80"
+    },
+    {
+      "title": "Chicken cajun",
+      "price": "$10.00",
+      "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80"
+    }
+  ],
+  "transactions": [
+    { "id": "6545", "date": "01 Oct | 11:29 am", "status": "Paid", "amount": "$64" },
+    { "id": "5412", "date": "01 Oct | 10:17 am", "status": "Pending", "amount": "$42" },
+    { "id": "6402", "date": "30 Sep | 09:11 am", "status": "Cancelled", "amount": "$120" },
+    { "id": "6321", "date": "29 Sep | 05:12 pm", "status": "Paid", "amount": "$89" }
+  ],
+  "report": {
+    "labels": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "sales": [12000, 24000, 31000, 14000, 26000, 18000, 22000]
+  },
+  "salesByCountry": [
+    { "country": "US", "sales": 30000, "color": "rgba(54,162,235,0.8)" },
+    { "country": "VN", "sales": 25000, "color": "rgba(255,99,132,0.8)" },
+    { "country": "AU", "sales": 20000, "color": "rgba(75,192,192,0.8)" }
+  ]
+}
