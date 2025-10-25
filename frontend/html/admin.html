@@ -23,16 +23,16 @@
           <!-- simple SVG icon -->
           <img src="../images/index/image-removebg-preview (36).png">
           <p class="muted">Admin</p>
+
         </div>
       </div>
 
       <nav class="nav">
-        <button class="nav-item active"><span class="dot"></span>Dashboard</button>
-        <button class="nav-item"><span class="dot"></span>Orders</button>
-        <button class="nav-item"><span class="dot"></span>Customers</button>
-        <button class="nav-item"><span class="dot"></span>Menu</button>
-        <button class="nav-item"><span class="dot"></span>Analytics</button>
-        <button class="nav-item"><span class="dot"></span>Settings</button>
+        <button class="nav-item active" data-page="dashboard"><span class="dot"></span>Dashboard</button>
+        <button class="nav-item" data-page="orders"><span class="dot"></span>Orders</button>
+        <button class="nav-item" data-page="customers"><span class="dot"></span>Customers</button>
+        <button class="nav-item" data-page="menu"><span class="dot"></span>Menu</button>
+        <button class="nav-item" data-page="analytics"><span class="dot"></span>Analytics</button>
       </nav>
 
       <div class="sidebar-footer">
@@ -64,101 +64,9 @@
 
       <!-- Content -->
       <section class="content">
-        <!-- KPI row -->
-        <div class="kpis">
-          <div class="card kpi">
-            <div class="kpi-title">Total Sales</div>
-            <div class="kpi-value" id="kpi-sales">$<span id="kpi-sales-val">350K</span></div>
-            <div class="kpi-meta">Last 7 days • <span class="up">+10.4%</span></div>
-          </div>
-
-          <div class="card kpi">
-            <div class="kpi-title">Total Orders</div>
-            <div class="kpi-value"><span id="kpi-orders-val">10.7K</span></div>
-            <div class="kpi-meta">Last 7 days • <span class="up">+14.4%</span></div>
-          </div>
-
-          <div class="card kpi">
-            <div class="kpi-title">Pending & Cancelled</div>
-            <div class="kpi-value"><span id="kpi-pending">509</span> / <span id="kpi-cancel">94</span></div>
-            <div class="kpi-meta">Last 7 days</div>
-          </div>
-
-          <div class="card kpi">
-            <div class="kpi-title">Active Users</div>
-            <div class="kpi-value" id="kpi-users">21.5K</div>
-            <div class="kpi-meta">Users in last 30 minutes</div>
-          </div>
+        <div class="content-frame">
+          <iframe id="contentFrame" src="pages/dashboard.html" frameborder="0"></iframe>
         </div>
-
-        <!-- MAIN GRID -->
-        <div class="grid">
-          <!-- left column -->
-          <div class="col-left">
-            <div class="card chart-card">
-              <div class="card-head">
-                <h3>Report for this week</h3>
-                <div class="segmented">
-                  <button class="seg-btn active" data-period="this">This week</button>
-                  <button class="seg-btn" data-period="last">Last week</button>
-                </div>
-              </div>
-              <canvas id="lineChart" height="160"></canvas>
-            </div>
-            <br/>
-            <div class="card list-card">
-              <h3>Top Products</h3>
-              <ul id="top-products">
-                <!-- filled by JS -->
-              </ul>
-            </div>
-          </div>
-
-          <!-- right column (summary / recipe preview) -->
-          <aside class="col-right">
-            <div class="card summary-card">
-              <h3>Your healthy bowl</h3>
-              <div class="summary-empty">
-                <div class="empty-illustration">🥣</div>
-                <p>Pick your favorite ingredients to calculate the calories</p>
-              </div>
-            </div>
-            <br/>
-            <div class="card sales-by-country">
-              <h3>Sales by Country</h3>
-              <canvas id="barChart" height="140"></canvas>
-            </div>
-          </aside>
-        </div>
-
-        <!-- Transactions table -->
-        <div class="card table-card">
-          <div class="card-head">
-            <h3>Recent Transactions</h3>
-            <div>
-              <button class="ghost small" id="exportBtn">Export</button>
-              <button class="ghost small" id="filterBtn">Filter</button>
-            </div>
-          </div>
-
-          <div class="table-wrap">
-            <table id="tx-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Id Customer</th>
-                  <th>Order Date</th>
-                  <th>Status</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- populated by JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </section>
 
       <!-- footer / tiny -->

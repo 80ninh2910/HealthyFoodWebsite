@@ -140,6 +140,19 @@ body{
 
 /* CONTENT */
 .content{padding:28px 36px 40px;display:flex;flex-direction:column;gap:22px}
+.content-frame{
+  width: 100%;
+  height: calc(100vh - 120px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.content-frame iframe{
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: var(--card);
+}
 
 /* KPI row */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
