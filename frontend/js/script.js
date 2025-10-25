@@ -1,3 +1,54 @@
+// Session Management - Check if user is logged in
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in and show appropriate UI
+    if (window.SessionManager && window.SessionManager.isLoggedIn()) {
+        const userInfo = window.SessionManager.getUserInfo();
+        console.log('User logged in:', userInfo);
+        
+        // Add user info to header or show login/logout buttons
+        updateHeaderForLoggedInUser(userInfo);
+    } else {
+        // Show login button or redirect to login
+        updateHeaderForGuestUser();
+    }
+});
+
+function updateHeaderForLoggedInUser(userInfo) {
+    // Add user info to header
+    const header = document.querySelector('.header .container');
+    if (header && !document.querySelector('.user-info')) {
+        const userInfoDiv = document.createElement('div');
+        userInfoDiv.className = 'user-info';
+        userInfoDiv.innerHTML = `
+            <span>Welcome, ${userInfo.username}</span>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        `;
+        header.appendChild(userInfoDiv);
+    }
+}
+
+function updateHeaderForGuestUser() {
+    // Add login button to header
+    const header = document.querySelector('.header .container');
+    if (header && !document.querySelector('.login-btn')) {
+        const loginDiv = document.createElement('div');
+        loginDiv.className = 'login-btn';
+        loginDiv.innerHTML = `<a href="login.html" class="btn btn-primary">Login</a>`;
+        header.appendChild(loginDiv);
+    }
+}
+
+// Logout function
+async function logout() {
+    if (window.SessionManager) {
+        await window.SessionManager.logout();
+    } else {
+        // Fallback logout
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+}
+
 document.getElementById("backToTop").addEventListener("click", function() {
   window.scrollTo({
     top: 0,
@@ -421,7 +472,15 @@ function findStore() {
 }
 
 function orderNow() {
-  showDeliveryOptions()
+  // Check if user is logged in
+  if (window.SessionManager && window.SessionManager.isLoggedIn()) {
+    // User is logged in, show order options
+    showDeliveryOptions()
+  } else {
+    // User not logged in, redirect to login
+    alert('Please login to place an order');
+    window.location.href = 'login.html';
+  }
 }
 
 function learnMoreCatering() {
@@ -474,7 +533,50 @@ function showDeliveryOptions() {
     `📞 **Hotline:** 0326238700\n\n` +
     `💡 **Tip:** Order through your preferred delivery app for the best experience!`
   
-  alert(deliveryInfo)
+  // Show delivery info and offer to create order
+  if (confirm(deliveryInfo + '\n\nWould you like to create an order now?')) {
+    createOrder();
+  }
+}
+
+// Function to create order with session management
+async function createOrder() {
+  if (!window.SessionManager || !window.SessionManager.isLoggedIn()) {
+    alert('Please login to create an order');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Get user info
+  const userInfo = window.SessionManager.getUserInfo();
+  
+  // Sample order data - in a real app, this would come from a form or cart
+  const orderData = {
+    user_id: userInfo.id,
+    items: [
+      {
+        name: "B1 Bowl",
+        quantity: 1,
+        price: 89000
+      }
+    ],
+    total_amount: 89000,
+    delivery_address: "Please specify delivery address",
+    notes: "Order created from website"
+  };
+
+  try {
+    const result = await window.SessionManager.createOrder(orderData);
+    
+    if (result.success) {
+      alert(`Order created successfully!\nOrder ID: ${result.order_id}\n\nYou will receive a confirmation call shortly.`);
+    } else {
+      alert(`Order creation failed: ${result.message}`);
+    }
+  } catch (error) {
+    console.error('Order creation error:', error);
+    alert('Failed to create order. Please try again.');
+  }
 }
 
 // Catering Information Function

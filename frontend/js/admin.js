@@ -1,5 +1,33 @@
 /* Admin dashboard interactivity + charts */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check if admin is logged in - check localStorage first
+  const userRole = localStorage.getItem('userRole');
+  const adminInfo = localStorage.getItem('adminInfo');
+  
+  if (!userRole || userRole !== 'admin' || !adminInfo) {
+    // Fallback to SessionManager if available
+    if (!window.SessionManager || !window.SessionManager.isLoggedIn() || window.SessionManager.getUserRole() !== 'admin') {
+      alert('Access denied. Please login as admin.');
+      window.location.href = 'login.html';
+      return;
+    }
+  }
+
+  // Display admin info
+  let adminData;
+  if (window.SessionManager && window.SessionManager.getUserInfo) {
+    adminData = window.SessionManager.getUserInfo();
+  } else {
+    adminData = JSON.parse(adminInfo);
+  }
+  console.log('Admin logged in:', adminData);
+  
+  // Update admin profile in sidebar
+  const profileName = document.querySelector('.profile strong');
+  const profileEmail = document.querySelector('.profile .muted');
+  if (profileName) profileName.textContent = adminData.display_name || adminData.username;
+  if (profileEmail) profileEmail.textContent = adminData.email;
+
   // set year
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -114,4 +142,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     return g;
   }
 
+});
+
+// Admin logout functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Add logout event listener to top header logout button
+  const topLogoutBtn = document.getElementById('adminLogoutBtn');
+  if (topLogoutBtn) {
+    topLogoutBtn.addEventListener('click', async function() {
+      if (confirm('Are you sure you want to logout?')) {
+        if (window.SessionManager) {
+          await window.SessionManager.logout();
+        } else {
+          // Fallback logout
+          localStorage.clear();
+          window.location.href = 'login.html';
+        }
+      }
+    });
+  }
+
+  // Add logout event listener to sidebar sign out button
+  const signOutBtn = document.querySelector('.sidebar-footer .ghost');
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', async function() {
+      if (confirm('Are you sure you want to logout?')) {
+        if (window.SessionManager) {
+          await window.SessionManager.logout();
+        } else {
+          // Fallback logout
+          localStorage.clear();
+          window.location.href = 'login.html';
+        }
+      }
+    });
+  }
 });

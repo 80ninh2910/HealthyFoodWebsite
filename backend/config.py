@@ -9,6 +9,4 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SESSION_TYPE = "filesystem"
-    SESSION_PERMANENT = False
     CORS_HEADERS = "Content-Type"
