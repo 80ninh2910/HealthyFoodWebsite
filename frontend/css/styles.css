@@ -428,6 +428,35 @@ body {
   left: 100%;
 }
 
+/* Navigation Auth Buttons */
+.nav-auth-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.login-btn, 
+.register-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #5da461 0%, #43a047 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(67, 160, 71, 0.2);
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover, 
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(67, 160, 71, 0.3);
+}
+
 .btn-primary {
   background: var(--gradient-primary);
   color: var(--white);

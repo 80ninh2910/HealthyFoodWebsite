@@ -25,6 +25,44 @@ def test_db():
     except Exception as e:
         return jsonify({"connected": False, "error": str(e)})
 
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    try:
+        data = request.json
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        
+        # Kiểm tra dữ liệu đầu vào
+        if not username or not email or not password:
+            return jsonify({"success": False, "message": "Missing required fields"}), 400
+            
+        # Kiểm tra username đã tồn tại chưa
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify({"success": False, "message": "Username already exists"}), 400
+            
+        # Kiểm tra email đã tồn tại chưa
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email:
+            return jsonify({"success": False, "message": "Email already exists"}), 400
+            
+        # Tạo user mới với role là user
+        hashed_password = generate_password_hash(password)
+        # Thêm giá trị created_at để tránh lỗi NULL
+        from datetime import datetime
+        new_user = User(username=username, email=email, password=hashed_password, role='user', created_at=datetime.now())
+        
+        # Lưu vào database
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return jsonify({"success": True, "message": "Registration successful"}), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": str(e)}), 500
+
 @app.route('/api/auth/customer-login', methods=['POST'])
 def customer_login():
     try:
