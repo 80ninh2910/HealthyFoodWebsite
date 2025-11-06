@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../js/menu-data.js"></script>
 </head>
 <body>
     <!-- Top Banner -->
@@ -32,7 +33,7 @@
             <nav class="nav">
                 <a href="our-bowls.html" class="nav-link" onclick="navigateToPage('bowls')">Our Bowls</a>
                 <a href="stores.html" class="nav-link" onclick="navigateToPage('stores')">Stores</a>
-                <a href="#" class="nav-link" onclick="navigateToPage('delivery')">Orders</a>
+                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Orders</a>
                 <a href="about-us.html" class="nav-link" onclick="navigateToPage('about')">About Us</a>
                 <a href="faqs.html" class="nav-link" onclick="navigateToPage('contact')">FAQs</a>
             </nav>
@@ -71,6 +72,30 @@
         </div>
     </section>
 
+    <!-- Added to Bag Modal -->
+    <div class="modal" id="addedToBagModal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <h2>My Bag</h2>
+            </div>
+            <div class="cart-summary">
+                <div class="cart-items">
+                    <!-- Cart items will be dynamically added here -->
+                </div>
+                <div class="cart-total">
+                    <p>Total Items: <span id="totalItems">0</span></p>
+                    <p>Total Price: $<span id="totalPrice">0.00</span></p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="continue-shopping">Continue Shopping</button>
+                <button class="view-bag">View My Bag</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Low Calories Section -->
     <section class="bowls-section" id="low-cal">
         <div class="container">
@@ -91,6 +116,12 @@
                         </div>
                         <h3 class="bowl-name">L1</h3>
                         <p class="bowl-description">Half beef steak, sweet potato, cauliflower, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l1',
+                            name: 'L1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">25</span>
@@ -120,6 +151,12 @@
                         </div>
                         <h3 class="bowl-name">L2</h3>
                         <p class="bowl-description">Salmon, sweet potato, mixed veggies, pak choi</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l2',
+                            name: 'L2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">24</span>
@@ -178,6 +215,12 @@
                         </div>
                         <h3 class="bowl-name">L4</h3>
                         <p class="bowl-description">Half chicken breast, baby potato, mixed veggies, pak choi</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l4',
+                            name: 'L4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">33</span>
@@ -207,6 +250,12 @@
                         </div>
                         <h3 class="bowl-name">L5</h3>
                         <p class="bowl-description">Half cajun chicken, Japanese cold soba, pickles, cauliflower</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l5',
+                            name: 'L5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">39</span>
@@ -236,6 +285,12 @@
                         </div>
                         <h3 class="bowl-name">L6</h3>
                         <p class="bowl-description">Tuna, baby potato, sweet corn, mixed veggies</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l6',
+                            name: 'L6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">34</span>
@@ -265,6 +320,12 @@
                         </div>
                         <h3 class="bowl-name">L7</h3>
                         <p class="bowl-description">Half cajun chicken breast, brown rice, beetroot, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l7',
+                            name: 'L7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">35</span>
@@ -294,6 +355,12 @@
                         </div>
                         <h3 class="bowl-name">L8</h3>
                         <p class="bowl-description">Basa fish, Japanese cold soba, avocado</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l8',
+                            name: 'L8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">33</span>
@@ -323,6 +390,12 @@
                         </div>
                         <h3 class="bowl-name">L9</h3>
                         <p class="bowl-description">Half beef steak, sweet potato, pak choi, broccoli, mix veggies</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l9',
+                            name: 'L9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">27</span>
@@ -352,6 +425,12 @@
                         </div>
                         <h3 class="bowl-name">L10</h3>
                         <p class="bowl-description">Duck breast, pumpkin, broccoli, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-l10',
+                            name: 'L10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">35</span>
@@ -392,6 +471,12 @@
                         </div>
                         <h3 class="bowl-name">B1</h3>
                         <p class="bowl-description">Tuna, donburi brown rice, beetroot, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b1',
+                            name: 'B1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">43</span>
@@ -421,6 +506,12 @@
                         </div>
                         <h3 class="bowl-name">B2</h3>
                         <p class="bowl-description">Half beef steak, pasta, mushroom, pak choi, pickles, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b2',
+                            name: 'B2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">35</span>
@@ -450,6 +541,12 @@
                         </div>
                         <h3 class="bowl-name">B3</h3>
                         <p class="bowl-description">Prawns, Japanese cold soba, French bean, tofu</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b3',
+                            name: 'B3 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">41</span>
@@ -479,6 +576,12 @@
                         </div>
                         <h3 class="bowl-name">B4</h3>
                         <p class="bowl-description">Salmon, pasta, spinach, salad and mix nuts</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b4',
+                            name: 'B4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">31</span>
@@ -508,6 +611,12 @@
                         </div>
                         <h3 class="bowl-name">B5</h3>
                         <p class="bowl-description">Duck breast, donburi brown rice, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b5',
+                            name: 'B5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">40</span>
@@ -537,6 +646,12 @@
                         </div>
                         <h3 class="bowl-name">B6</h3>
                         <p class="bowl-description">Salmon, donburi brown rice, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b6',
+                            name: 'B6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">32</span>
@@ -566,6 +681,12 @@
                         </div>
                         <h3 class="bowl-name">B7</h3>
                         <p class="bowl-description">Duck breast, donburi white rice, mix veggies, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b7',
+                            name: 'B7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">42</span>
@@ -595,6 +716,12 @@
                         </div>
                         <h3 class="bowl-name">B8</h3>
                         <p class="bowl-description">Basa fish, donburi brown rice, spinach, cabbage</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b8',
+                            name: 'B8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">37</span>
@@ -624,6 +751,12 @@
                         </div>
                         <h3 class="bowl-name">B9</h3>
                         <p class="bowl-description">Half original chicken, prawns, donburi brown rice, French bean</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b9',
+                            name: 'B9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">58</span>
@@ -653,6 +786,12 @@
                         </div>
                         <h3 class="bowl-name">B10</h3>
                         <p class="bowl-description">Full beef steak, donburi brown rice, cauliflower</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b10',
+                            name: 'B10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">54</span>
@@ -682,6 +821,12 @@
                         </div>
                         <h3 class="bowl-name">B11</h3>
                         <p class="bowl-description">Tuna, donburi white rice, broccoli, pickles</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b11',
+                            name: 'B11 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">42</span>
@@ -711,6 +856,12 @@
                         </div>
                         <h3 class="bowl-name">B12</h3>
                         <p class="bowl-description">Full cajun chicken, brown rice, sweet corn, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b12',
+                            name: 'B12 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">65</span>
@@ -740,6 +891,12 @@
                         </div>
                         <h3 class="bowl-name">B13</h3>
                         <p class="bowl-description">Full cajun chicken, baby potato, spinach, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b13',
+                            name: 'B13 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">64</span>
@@ -769,6 +926,12 @@
                         </div>
                         <h3 class="bowl-name">B14</h3>
                         <p class="bowl-description">Basa fish, donburi brown rice, cabbage, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b14',
+                            name: 'B14 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">36</span>
@@ -798,6 +961,12 @@
                         </div>
                         <h3 class="bowl-name">B15</h3>
                         <p class="bowl-description">Half beef steak, prawns, soba, cauliflower, pickles, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-b15',
+                            name: 'B15 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">55</span>
@@ -838,6 +1007,12 @@
                         </div>
                         <h3 class="bowl-name">H1</h3>
                         <p class="bowl-description">Half original chicken, half beef steak, donburi brown rice, spinach</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h1',
+                            name: 'H1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">62</span>
@@ -867,6 +1042,12 @@
                         </div>
                         <h3 class="bowl-name">H2</h3>
                         <p class="bowl-description">Half beef steak, prawns, donburi white rice, baby potato, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h2',
+                            name: 'H2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">53</span>
@@ -896,6 +1077,12 @@
                         </div>
                         <h3 class="bowl-name">H3</h3>
                         <p class="bowl-description">Basa fish, Japanese cold soba, avocado, mixed veggies, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h3',
+                            name: 'H3 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">39</span>
@@ -925,6 +1112,12 @@
                         </div>
                         <h3 class="bowl-name">H4</h3>
                         <p class="bowl-description">Duck breast, prawns, sweet potato, edamame, onsen egg</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h4',
+                            name: 'H4 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">66</span>
@@ -954,6 +1147,12 @@
                         </div>
                         <h3 class="bowl-name">H5</h3>
                         <p class="bowl-description">Half beef steak, full chicken breast, donburi brown rice, pumpkin, french bean</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h5',
+                            name: 'H5 Bowl',
+                            image: '../images/index/bowl-b5.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">91</span>
@@ -983,6 +1182,12 @@
                         </div>
                         <h3 class="bowl-name">H6</h3>
                         <p class="bowl-description">Full original chicken, fusilli pasta, avocado, beetroot</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h6',
+                            name: 'H6 Bowl',
+                            image: '../images/index/bowl-b6.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">65</span>
@@ -1012,6 +1217,12 @@
                         </div>
                         <h3 class="bowl-name">H7</h3>
                         <p class="bowl-description">Half beef steak, half cajun chicken breast, donburi brown, sweet corn</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h7',
+                            name: 'H7 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">62</span>
@@ -1041,6 +1252,12 @@
                         </div>
                         <h3 class="bowl-name">H8</h3>
                         <p class="bowl-description">Full beef steak, donburi brown rice, baby potato, broccoli</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h8',
+                            name: 'H8 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">56</span>
@@ -1070,6 +1287,12 @@
                         </div>
                         <h3 class="bowl-name">H9</h3>
                         <p class="bowl-description">Full beef steak, donburi white rice, sweet corn</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h9',
+                            name: 'H9 Bowl',
+                            image: '../images/index/bowl-b3.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">54</span>
@@ -1099,6 +1322,12 @@
                         </div>
                         <h3 class="bowl-name">H10</h3>
                         <p class="bowl-description">Half cajun chicken breast, salmon, donburi white rice, tomato</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-h10',
+                            name: 'H10 Bowl',
+                            image: '../images/index/bowl-b4.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">60</span>
@@ -1139,6 +1368,12 @@
                         </div>
                         <h3 class="bowl-name">V1</h3>
                         <p class="bowl-description">Brown rice, cauliflower, mixed veggies, edamame, mushroom</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-v1',
+                            name: 'V1 Bowl',
+                            image: '../images/index/bowl-b1.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">18</span>
@@ -1168,6 +1403,12 @@
                         </div>
                         <h3 class="bowl-name">V2</h3>
                         <p class="bowl-description">Japanese cold soba, cabbage, chickpeas, beetroot, avocado</p>
+                        <button class="add-to-bag-btn" onclick="addToBag({
+                            id: 'bowl-v2',
+                            name: 'V2 Bowl',
+                            image: '../images/index/bowl-b2.jpg',
+                            price: 12.99
+                        })">Add to Bag</button>
                         <div class="bowl-macros">
                             <div class="macro">
                                 <span class="macro-value">19</span>
@@ -1335,5 +1576,52 @@
     </footer>
 
     <script src="../js/our-bowls-script.js"></script>
+    <script src="../js/orders.js"></script>
+    <script>
+    // Wire bowl cards to add-to-cart flow
+    document.addEventListener('DOMContentLoaded', function () {
+        // price map (defaults provided if not listed)
+        const priceMap = {
+            'L1': 14.99,'L2': 15.49,'L3': 16.99,'L4': 13.99,'L5': 15.99,
+            'L6': 14.49,'L7': 16.49,'L8': 17.99,'L9': 15.99,'L10':16.99,
+            'B1': 18.99,'B2': 17.49,'B3': 16.49
+        };
+
+        function getPriceFor(bowlId) {
+            return priceMap[bowlId] || 14.99;
+        }
+
+        document.querySelectorAll('.bowl-card').forEach(card => {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', function (e) {
+                // ignore clicks on download recipe button
+                if (e.target.closest('.download-recipe')) return;
+
+                const bowlId = card.dataset.bowl || ('bowl-' + Math.random().toString(36).slice(2,7));
+                const nameEl = card.querySelector('.bowl-name');
+                const imgEl = card.querySelector('img');
+                const name = nameEl ? nameEl.textContent.trim() : bowlId;
+                const image = imgEl ? imgEl.src : '';
+                const price = getPriceFor(bowlId);
+
+                const confirmed = window.confirm(`Add \"${name}\" to your bag for ${'$'}${price.toFixed(2)}?`);
+                if (!confirmed) return;
+
+                if (window.GBCart && typeof window.GBCart.addToCart === 'function') {
+                    window.GBCart.addToCart({ id: bowlId, name: name, price: price, image: image });
+                } else {
+                    // fallback: store minimal item in localStorage
+                    const key = 'gb_cart_v1';
+                    const raw = localStorage.getItem(key);
+                    const cart = raw ? JSON.parse(raw) : [];
+                    const existing = cart.find(i => i.id === bowlId);
+                    if (existing) existing.qty = (existing.qty || 0) + 1; else cart.push({ id: bowlId, name, price, image, qty: 1 });
+                    localStorage.setItem(key, JSON.stringify(cart));
+                    alert(name + ' added to cart');
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

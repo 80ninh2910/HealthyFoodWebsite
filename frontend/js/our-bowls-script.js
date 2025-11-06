@@ -36,6 +36,207 @@ window.addEventListener("scroll", () => {
   lastScroll = currentScroll
 })
 
+// Utility function for formatting money
+function formatMoney(amount) {
+    return '$' + amount.toFixed(2);
+}
+
+// Cart Management
+let cart = [];
+
+// Load cart from localStorage when page loads
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize modal elements
+    initializeModal();
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
+
+    // Load menu items
+    const categories = await MenuManager.getMenuItems();
+    const menuContainer = document.querySelector('.menu-items-container');
+    if (menuContainer) {
+        categories.forEach(category => {
+            const categorySection = document.createElement('section');
+            categorySection.classList.add('menu-category');
+            categorySection.innerHTML = `
+                <h2>${category.name}</h2>
+                <div class="menu-grid">
+                    ${category.items.map(item => `
+                        <div class="menu-item" data-id="${item.id}">
+                            <img src="${item.image}" alt="${item.name}">
+                            <h3>${item.name}</h3>
+                            <p>${item.description}</p>
+                            <div class="price-add">
+                                <span class="price">${MenuManager.formatPrice(item.price)}</span>
+                                <button class="add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            menuContainer.appendChild(categorySection);
+        });
+    }
+});
+
+// Added to Bag Modal Functionality
+let modal;
+let closeBtn;
+let continueShoppingBtn;
+let viewBagBtn;
+let cartItemsContainer;
+
+function initializeModal() {
+    modal = document.getElementById('addedToBagModal');
+    if (!modal) {
+        console.error('Modal element not found');
+        return;
+    }
+    closeBtn = modal.querySelector('.close-btn');
+    continueShoppingBtn = modal.querySelector('.continue-shopping');
+    viewBagBtn = modal.querySelector('.view-bag');
+    cartItemsContainer = modal.querySelector('.cart-items');
+
+    // Add click handlers for modal buttons
+    closeBtn.addEventListener('click', hideModal);
+    continueShoppingBtn.addEventListener('click', hideModal);
+    viewBagBtn.addEventListener('click', () => {
+        window.location.href = 'orders.html';
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideModal();
+        }
+    });
+}
+
+function addToBag(product) {
+    // Lấy giỏ hàng từ localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Kiểm tra sản phẩm đã tồn tại
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+        existingItem.qty = Math.min((existingItem.qty || 1) + 1, 99);
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            qty: 1
+        });
+    }
+
+    // Lưu vào localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Show the cart modal
+    showCartModal();
+}
+
+function showCartModal() {
+    if (!modal) return;
+    updateCartDisplay();
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function updateCartDisplay() {
+    // Clear existing items
+    cartItemsContainer.innerHTML = '';
+    
+    // Get latest cart from localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Add each item to the display
+    cart.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item';
+        itemElement.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <div class="cart-item-details">
+                <h3 class="cart-item-name">${item.name}</h3>
+                <p class="cart-item-price">${formatMoney(item.price * item.qty)}</p>
+                <p class="cart-item-quantity">Số lượng: ${item.qty}</p>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">×</button>
+        `;
+        cartItemsContainer.appendChild(itemElement);
+    });
+
+    // Update totals
+    const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    document.getElementById('totalItems').textContent = totalItems;
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+}
+
+function removeFromCart(id) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart = cart.filter(item => item.id !== id);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartDisplay();
+    
+    // Hide modal if cart is empty
+    if (cart.length === 0) {
+        hideModal();
+    }
+}
+
+function hideModal() {
+    if (!modal) return;
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// Add click handlers for modal buttons
+closeBtn.addEventListener('click', hideModal);
+continueShoppingBtn.addEventListener('click', hideModal);
+viewBagBtn.addEventListener('click', () => {
+    window.location.href = 'orders.html';
+});
+
+// Close modal when clicking outside
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        hideModal();
+    }
+});
+
+// Add "Add to Bag" buttons to all bowls
+function addAddToBagButtons() {
+    const bowlCards = document.querySelectorAll('.bowl-card');
+    bowlCards.forEach(card => {
+        // Skip if button already exists
+        if (card.querySelector('.add-to-bag-btn')) return;
+        
+        const bowlName = card.querySelector('.bowl-name').textContent;
+        const bowlImage = card.querySelector('.bowl-image img').src;
+        const button = document.createElement('button');
+        button.className = 'add-to-bag-btn';
+        button.textContent = 'Add to Bag';
+        button.onclick = () => addToBag({
+            id: 'bowl-' + bowlName.toLowerCase().replace(/\s+/g, '-'),
+            name: bowlName + ' Bowl',
+            image: bowlImage,
+            price: 12.99
+        });
+
+        // Insert before bowl-macros
+        const macrosDiv = card.querySelector('.bowl-macros');
+        macrosDiv.parentNode.insertBefore(button, macrosDiv);
+    });
+}
+
+// Call function when page loads
+document.addEventListener('DOMContentLoaded', addAddToBagButtons);
+
 // Filter Tabs Functionality
 const filterTabs = document.querySelectorAll(".filter-tab")
 const bowlSections = document.querySelectorAll(".bowls-section")
