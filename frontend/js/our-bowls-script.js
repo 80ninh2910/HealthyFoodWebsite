@@ -195,19 +195,6 @@ function hideModal() {
     document.body.style.overflow = '';
 }
 
-// Add click handlers for modal buttons
-closeBtn.addEventListener('click', hideModal);
-continueShoppingBtn.addEventListener('click', hideModal);
-viewBagBtn.addEventListener('click', () => {
-    window.location.href = 'orders.html';
-});
-
-// Close modal when clicking outside
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        hideModal();
-    }
-});
 
 // Add "Add to Bag" buttons to all bowls
 function addAddToBagButtons() {

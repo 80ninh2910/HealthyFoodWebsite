@@ -182,7 +182,7 @@
             if (cart.length === 0) {
                 cartItems.innerHTML = `
                     <div class="empty-cart">
-                        <img src="../images/bowl/empty-cart.png" alt="Empty Cart" class="empty-cart-image">
+                        <img src="../images/orders/emty.jpg" width="200px" alt="Empty Cart" class="empty-cart-image">
                         <p class="empty">Giỏ hàng của bạn đang trống</p>
                         <a href="our-bowls.html" class="browse-button">Xem thực đơn</a>
                     </div>`;
