@@ -85,8 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.SessionManager) {
           await window.SessionManager.logout();
         } else {
-          // Fallback logout
-          localStorage.clear();
+          // Fallback logout: remove only auth keys so cart or other data isn't lost
+          try {
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('adminInfo');
+            localStorage.removeItem('userRole');
+          } catch (e) { /* ignore */ }
           window.location.href = 'login.html';
         }
       }
@@ -101,8 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.SessionManager) {
           await window.SessionManager.logout();
         } else {
-          // Fallback logout
-          localStorage.clear();
+          // Fallback logout: remove only auth keys so cart or other data isn't lost
+          try {
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('adminInfo');
+            localStorage.removeItem('userRole');
+          } catch (e) { /* ignore */ }
           window.location.href = 'login.html';
         }
       }

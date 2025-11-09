@@ -116,12 +116,10 @@
         },
 
         clearCart: function() {
-            if (confirm('Bạn có chắc muốn xóa tất cả món trong giỏ hàng?')) {
-                this.saveCart([]);
-                this.renderCartOnOrdersPage();
-                this.showToast('Đã xóa toàn bộ giỏ hàng');
-                this.updateTotalPrice();
-            }
+            this.saveCart([]);
+            this.renderCartOnOrdersPage();
+            this.showToast('Đã xóa toàn bộ giỏ hàng');
+            this.updateTotalPrice();
         },
 
         updateTotalPrice: function() {
@@ -154,16 +152,27 @@
         },
 
         calculateSubtotal: function(cart) {
-            return cart.reduce(function(s, i) {
-                return s + (i.price || 0) * (i.qty || 1);
+            return cart.reduce(function(sum, item) {
+                // Convert any decimal prices to VND
+                let price = Number(item.price) || 0;
+                if (price > 0 && price < 1000) {
+                    price = Math.round(price * 10000);
+                }
+                return sum + price * (item.qty || 1);
             }, 0);
         },
 
         formatMoney: function(v) {
+            // Ensure v is a number and convert any decimal prices to VND
+            let amount = Number(v) || 0;
+            // If it looks like a unit price (e.g. 12.99), convert to VND
+            if (amount > 0 && amount < 1000) {
+                amount = Math.round(amount * 10000);
+            }
             return new Intl.NumberFormat('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
-            }).format(v);
+            }).format(amount);
         },
 
         renderCartOnOrdersPage: function() {
@@ -274,6 +283,97 @@
             if (!cartItems) return;
 
             var self = this;
+            
+            // Set up navigation buttons
+            const proceedBtn = document.getElementById('proceedBtn');
+            const backToCartBtn = document.querySelector('.back-to-cart');
+            const backToDeliveryBtn = document.querySelector('.back-to-delivery');
+            const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+
+            if (proceedBtn) {
+                proceedBtn.addEventListener('click', function() {
+                    document.getElementById('cartSection').classList.add('hidden');
+                    document.getElementById('deliverySection').classList.remove('hidden');
+                    // Update progress indicator
+                    document.querySelector('[data-step="cart"]').classList.remove('active');
+                    document.querySelector('[data-step="delivery"]').classList.add('active');
+                });
+            }
+
+            if (backToCartBtn) {
+                backToCartBtn.addEventListener('click', function() {
+                    document.getElementById('deliverySection').classList.add('hidden');
+                    document.getElementById('cartSection').classList.remove('hidden');
+                    // Update progress indicator
+                    document.querySelector('[data-step="delivery"]').classList.remove('active');
+                    document.querySelector('[data-step="cart"]').classList.add('active');
+                });
+            }
+
+            if (backToDeliveryBtn) {
+                backToDeliveryBtn.addEventListener('click', function() {
+                    document.getElementById('paymentSection').classList.add('hidden');
+                    document.getElementById('deliverySection').classList.remove('hidden');
+                    // Update progress indicator
+                    document.querySelector('[data-step="payment"]').classList.remove('active');
+                    document.querySelector('[data-step="delivery"]').classList.add('active');
+                });
+            }
+
+            // Handle delivery form submission
+            const deliveryForm = document.querySelector('.delivery-form');
+            if (deliveryForm) {
+                deliveryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Store delivery info
+                    const formData = new FormData(deliveryForm);
+                    const deliveryInfo = Object.fromEntries(formData.entries());
+                    localStorage.setItem('deliveryInfo', JSON.stringify(deliveryInfo));
+                    
+                    // Move to payment
+                    document.getElementById('deliverySection').classList.add('hidden');
+                    document.getElementById('paymentSection').classList.remove('hidden');
+                    // Update progress
+                    document.querySelector('[data-step="delivery"]').classList.remove('active');
+                    document.querySelector('[data-step="payment"]').classList.add('active');
+                });
+            }
+
+            // Handle final order confirmation
+            if (confirmOrderBtn) {
+                confirmOrderBtn.addEventListener('click', async function() {
+                    const cart = self.getCart();
+                    if (cart.length === 0) {
+                        self.showToast('Giỏ hàng trống');
+                        return;
+                    }
+
+                    const selectedPayment = document.querySelector('input[name="payment"]:checked');
+                    if (!selectedPayment) {
+                        self.showToast('Vui lòng chọn phương thức thanh toán');
+                        return;
+                    }
+
+                    const deliveryInfo = JSON.parse(localStorage.getItem('deliveryInfo') || '{}');
+                    if (!deliveryInfo.fullName || !deliveryInfo.phone || !deliveryInfo.address) {
+                        self.showToast('Thiếu thông tin giao hàng');
+                        return;
+                    }
+
+                    // Calculate final total
+                    const subtotal = self.calculateSubtotal(cart);
+                    const deliveryFee = subtotal >= 300000 ? 0 : 30000;
+                    const total = subtotal + deliveryFee;
+
+                    // Process the order
+                    self.processOrder({
+                        items: cart,
+                        deliveryInfo: deliveryInfo,
+                        paymentMethod: selectedPayment.value,
+                        total: total
+                    });
+                });
+            }
 
             // Thêm event listener cho nút xóa toàn bộ giỏ hàng
             var clearCartBtn = document.getElementById('clearCartBtn');
@@ -306,12 +406,10 @@
             cartItems.querySelectorAll('.delete-btn').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     var id = e.currentTarget.dataset.id;
-                    if (confirm('Bạn có chắc muốn xóa món này khỏi giỏ hàng?')) {
-                        var item = self.getCart().find(i => i.id === id);
-                        self.removeFromCart(id);
-                        self.showToast('Đã xóa ' + (item ? item.name : 'sản phẩm') + ' khỏi giỏ hàng');
-                        self.updateTotalPrice();
-                    }
+                    var item = self.getCart().find(i => i.id === id);
+                    self.removeFromCart(id);
+                    self.showToast('Đã xóa ' + (item ? item.name : 'sản phẩm') + ' khỏi giỏ hàng');
+                    self.updateTotalPrice();
                 });
             });
 
@@ -425,19 +523,103 @@
             }
         },
 
-        processOrder: function(orderData) {
+        processOrder: async function(orderData) {
             var self = this;
-            // Here you would typically send the order to your backend
-            console.log('Processing order:', orderData);
             
-            // Simulate order processing
-            self.showToast('Đang xử lý đơn hàng...');
-            setTimeout(function() {
-                self.clearCart();
-                self.showToast('Đặt hàng thành công!');
-                // Redirect to order confirmation page
-                window.location.href = 'order-confirmation.html';
-            }, 2000);
+            try {
+                // Validate user is logged in according to client storage
+                const userInfo = (window.SessionManager && window.SessionManager.getUserInfo && window.SessionManager.getUserInfo()) || JSON.parse(localStorage.getItem('userInfo') || 'null');
+                console.log('Current user info (may be null for guests):', userInfo);
+
+                // Proceed with order creation regardless of server-side session.
+                // Include client-side user_id if available; backend will accept it as a dev fallback.
+                self.showToast('Đang xử lý đơn hàng...');
+                
+                // Prepare order data (include client-side user_id as a development fallback)
+                const orderPayload = {
+                    items: self.getCart(),
+                    total: orderData.total,
+                    deliveryAddress: orderData.deliveryAddress,
+                    phoneNumber: orderData.phoneNumber,
+                    paymentMethod: orderData.paymentMethod,
+                    user_id: (userInfo && userInfo.id) || null
+                };
+                
+                console.log('Sending order payload:', orderPayload);
+                
+                const response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(orderPayload)
+                });
+
+                console.log('Order response:', response);
+                const result = await response.json();
+                console.log('Order result:', result);
+                
+                if (result.success) {
+                    // Get delivery info and calculate totals
+                    const deliveryInfo = JSON.parse(localStorage.getItem('deliveryInfo') || '{}');
+                    
+                    // Get the total that was displayed on the orders page
+                    const displayedOrderTotal = document.getElementById('subtotal')?.textContent || '0đ';
+                    const displayedTotal = document.getElementById('totalAmount')?.textContent || '0đ';
+                    const cart = self.getCart();
+                    
+                    // Parse the displayed totals to get numeric values
+                    const orderTotal = Number(displayedOrderTotal.replace(/[^\d]/g, ''));
+                    const finalTotal = Number(displayedTotal.replace(/[^\d]/g, ''));
+                    
+                    // Calculate delivery fee
+                    const deliveryFee = orderTotal >= 300000 ? 0 : 30000;
+
+                    // Log order details for debugging
+                    console.log('Order Details:', {
+                        originalOrderTotal: displayedOrderTotal,
+                        originalTotal: displayedTotal,
+                        orderTotal,
+                        deliveryFee,
+                        finalTotal,
+                        cartItems: cart
+                    });
+
+                    // Save complete order details for confirmation page
+                    localStorage.setItem('lastOrder', JSON.stringify({
+                        order_id: result.order_id,
+                        customerInfo: {
+                            fullName: deliveryInfo.fullName,
+                            phone: deliveryInfo.phone,
+                            email: deliveryInfo.email,
+                            address: `${deliveryInfo.address}, ${deliveryInfo.district}, ${deliveryInfo.city}`,
+                            notes: deliveryInfo.notes
+                        },
+                        orderTotal: displayedOrderTotal,  // Lưu giá trị đã format
+                        shippingFee: deliveryFee,
+                        totalAmount: displayedTotal,  // Lưu giá trị đã format
+                        orderItems: cart.map(item => ({
+                            name: item.name,
+                            quantity: item.qty,
+                            price: item.price,
+                            total: item.price * item.qty
+                        }))
+                    }));
+
+                    // Clear cart without confirmation
+                    localStorage.removeItem('cart');
+                    
+                    // Redirect to confirmation page
+                    window.location.href = 'order-confirmation.html';
+                } else {
+                    throw new Error(result.message || 'Lỗi khi đặt hàng');
+                }
+            } catch (error) {
+                console.error('Order error:', error);
+                self.showToast('Lỗi: ' + (error.message || 'Không thể đặt hàng. Vui lòng thử lại.'));
+            }
         }
     };
 

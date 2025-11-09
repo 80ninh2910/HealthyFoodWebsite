@@ -16,8 +16,8 @@ class LoginManager {
         localStorage.removeItem('adminInfo');
         localStorage.removeItem('userRole');
         
-        // Check if user is already logged in (server-side only)
-        this.checkExistingSession();
+        // NOTE: removed automatic server-side session check to avoid auto-redirect/login when
+        // opening the login page. Login will only occur after the user submits credentials.
     }
 
     async checkExistingSession() {
@@ -52,6 +52,13 @@ class LoginManager {
         }
 
         try {
+            // Ensure any previous auth state is cleared so this is a fresh login attempt
+            try {
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('adminInfo');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('user_id');
+            } catch (e) { /* ignore */ }
             const response = await fetch(`${this.baseURL}/auth/customer-login`, {
                 method: 'POST',
                 headers: {
@@ -70,8 +77,16 @@ class LoginManager {
                 this.showMessage('Login successful! Redirecting...', 'success');
                 
                 // Store user info in localStorage for easy access
+                // Remove any leftover fallback user_id from previous sessions
+                try { localStorage.removeItem('user_id'); } catch (e) { /* ignore */ }
                 localStorage.setItem('userInfo', JSON.stringify(data.user));
                 localStorage.setItem('userRole', 'customer');
+                // Reset cart on a fresh login so previous anonymous cart is not carried over
+                try {
+                    localStorage.setItem('cart', JSON.stringify([]));
+                    // notify other pages/scripts that the cart was reset so they can update UI
+                    try { window.dispatchEvent(new CustomEvent('cart:reset')); } catch (e) { /* ignore */ }
+                } catch (e) { /* ignore */ }
                 
                 // Redirect to index.html after a short delay
                 setTimeout(() => {
@@ -98,6 +113,13 @@ class LoginManager {
         }
 
         try {
+            // Ensure any previous auth state is cleared so this is a fresh admin login attempt
+            try {
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('adminInfo');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('user_id');
+            } catch (e) { /* ignore */ }
             const response = await fetch(`${this.baseURL}/auth/admin-login`, {
                 method: 'POST',
                 headers: {
@@ -116,8 +138,15 @@ class LoginManager {
                 this.showMessage('Admin login successful! Redirecting...', 'success');
                 
                 // Store admin info in localStorage for easy access
+                // Remove any leftover fallback user_id from previous sessions
+                try { localStorage.removeItem('user_id'); } catch (e) { /* ignore */ }
                 localStorage.setItem('adminInfo', JSON.stringify(data.admin));
                 localStorage.setItem('userRole', 'admin');
+                // Reset cart on admin login as well
+                try {
+                    localStorage.setItem('cart', JSON.stringify([]));
+                    try { window.dispatchEvent(new CustomEvent('cart:reset')); } catch (e) { /* ignore */ }
+                } catch (e) { /* ignore */ }
                 
                 // Redirect to admin.html after a short delay
                 setTimeout(() => {
@@ -211,19 +240,35 @@ class SessionManager {
             localStorage.removeItem('userInfo');
             localStorage.removeItem('adminInfo');
             localStorage.removeItem('userRole');
+            try { localStorage.removeItem('user_id'); } catch (e) { /* ignore */ }
             
             // Redirect to login page
             window.location.href = 'login.html';
         } catch (error) {
             console.error('Logout error:', error);
             // Still clear local storage and redirect even if server logout fails
-            localStorage.clear();
+            try {
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('adminInfo');
+                localStorage.removeItem('userRole');
+                try { localStorage.removeItem('user_id'); } catch (e) { /* ignore */ }
+            } catch (e) { /* ignore */ }
             window.location.href = 'login.html';
         }
     }
 
     static async createOrder(orderData) {
         try {
+            // Ensure orderData contains user_id as a fallback for environments where
+            // server-side session cookies may not be sent. The server accepts client-
+            // provided user_id only as a development fallback (see backend warnings).
+            try {
+                const userInfo = SessionManager.getUserInfo();
+                if (userInfo && userInfo.id && !orderData.user_id) {
+                    orderData.user_id = userInfo.id;
+                }
+            } catch (e) { /* ignore */ }
+
             const response = await fetch('http://localhost:5000/api/orders', {
                 method: 'POST',
                 headers: {

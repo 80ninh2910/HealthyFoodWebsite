@@ -33,7 +33,7 @@
             <nav class="nav">
                 <a href="our-bowls.html" class="nav-link" onclick="navigateToPage('bowls')">Our Bowls</a>
                 <a href="stores.html" class="nav-link" onclick="navigateToPage('stores')">Stores</a>
-                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Orders</a>
+                <a href="orders.html" class="nav-link" onclick="navigateToPage('delivery')">Cart</a>
                 <a href="about-us.html" class="nav-link" onclick="navigateToPage('about')">About Us</a>
                 <a href="faqs.html" class="nav-link" onclick="navigateToPage('contact')">FAQs</a>
             </nav>
@@ -1591,11 +1591,20 @@
             return priceMap[bowlId] || 14.99;
         }
 
+        // Helper: format VND
+        function formatVND(amount) {
+            try {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            } catch (e) {
+                return amount + ' VND';
+            }
+        }
+
         document.querySelectorAll('.bowl-card').forEach(card => {
             card.style.cursor = 'pointer';
-            card.addEventListener('click', function (e) {
-                // ignore clicks on download recipe button
-                if (e.target.closest('.download-recipe')) return;
+        card.addEventListener('click', function (e) {
+            // ignore clicks on download recipe button or on the add-to-bag/add-to-cart buttons
+            if (e.target.closest('.download-recipe') || e.target.closest('.add-to-bag-btn') || e.target.closest('.add-to-cart') || e.target.closest('.add-to-bag')) return;
 
                 const bowlId = card.dataset.bowl || ('bowl-' + Math.random().toString(36).slice(2,7));
                 const nameEl = card.querySelector('.bowl-name');
@@ -1604,20 +1613,30 @@
                 const image = imgEl ? imgEl.src : '';
                 const price = getPriceFor(bowlId);
 
-                const confirmed = window.confirm(`Add \"${name}\" to your bag for ${'$'}${price.toFixed(2)}?`);
-                if (!confirmed) return;
+                // Normalize price to integer VND so orders page calculates correctly.
+                // Rule: if price looks like a small decimal (e.g. 12.99) assume it's a unit price
+                // and convert to VND by multiplying by 10000 (produces typical VND price like 129900).
+                // If price is already a large integer (>1000) assume it's already in VND.
+                const priceVND = (typeof price === 'number' && price < 1000) ? Math.round(price * 10000) : Math.round(price || 0);
+
+                // Add to cart without browser confirm dialog (less intrusive)
+
+                const item = { id: bowlId, name: name, price: priceVND, image: image };
 
                 if (window.GBCart && typeof window.GBCart.addToCart === 'function') {
-                    window.GBCart.addToCart({ id: bowlId, name: name, price: price, image: image });
+                    // Use the global cart manager which expects price in VND integers
+                    window.GBCart.addToCart(item);
+                    // showCartModal is provided by our-bowls-script.js to display the cart modal
+                    if (typeof showCartModal === 'function') showCartModal();
                 } else {
-                    // fallback: store minimal item in localStorage
-                    const key = 'gb_cart_v1';
+                    // fallback: store minimal item in localStorage under the same key used by orders.js ('cart')
+                    const key = 'cart';
                     const raw = localStorage.getItem(key);
                     const cart = raw ? JSON.parse(raw) : [];
                     const existing = cart.find(i => i.id === bowlId);
-                    if (existing) existing.qty = (existing.qty || 0) + 1; else cart.push({ id: bowlId, name, price, image, qty: 1 });
+                    if (existing) existing.qty = (existing.qty || 0) + 1; else cart.push(Object.assign({ qty: 1 }, item));
                     localStorage.setItem(key, JSON.stringify(cart));
-                    alert(name + ' added to cart');
+                    if (typeof showCartModal === 'function') showCartModal();
                 }
             });
         });

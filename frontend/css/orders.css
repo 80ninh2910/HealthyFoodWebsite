@@ -595,6 +595,59 @@ body {
   background: var(--primary-light);
 }
 
+/* Payment Actions */
+.payment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.back-to-delivery,
+.confirm-order {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.8rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.back-to-delivery {
+  background: linear-gradient(135deg, #f1f8e9, #dcedc8);
+  color: #33691e;
+  border: 1px solid rgba(85, 139, 47, 0.2);
+}
+
+.back-to-delivery:hover {
+  background: linear-gradient(135deg, #dcedc8, #c5e1a5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(85, 139, 47, 0.2);
+}
+
+.confirm-order {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.confirm-order:hover {
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+}
+
+.confirm-order:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* ================================
    🥗 Order Summary (Eat Clean Style)
    ================================ */

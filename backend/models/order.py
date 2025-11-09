@@ -1,5 +1,5 @@
 from models import db
-from datetime import datetime
+from sqlalchemy import text
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -8,7 +8,10 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     total = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(20), default='pending')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Use a server-side default so the database sets the timestamp in its own format.
+    # This avoids sending a Python datetime (with microseconds/timezone differences)
+    # in the INSERT and keeps the DB schema unchanged.
+    created_at = db.Column(db.DateTime, server_default=text('CURRENT_TIMESTAMP'), nullable=False)
 
     # Quan hệ ORM
     user = db.relationship('User', backref='orders', lazy=True)
@@ -20,6 +23,6 @@ class Order(db.Model):
             "user_id": self.user_id,
             "total": self.total,
             "status": self.status,
-            "created_at": self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            "created_at": self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
             "items": [item.to_dict() for item in self.items]
         }

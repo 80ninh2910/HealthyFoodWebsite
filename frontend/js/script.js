@@ -11,6 +11,33 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show login button or redirect to login
         updateHeaderForGuestUser();
     }
+
+  // Ensure logo click navigates to index.html on every page
+  try {
+    document.querySelectorAll('.logo').forEach(function(logo) {
+      // if there's already a link inside, don't override
+      if (logo.querySelector('a')) {
+        return;
+      }
+      logo.style.cursor = 'pointer';
+      logo.addEventListener('click', function() {
+        window.location.href = 'index.html';
+      });
+    });
+  } catch (e) {
+    console.error('Logo wiring error', e);
+  }
+
+  // Normalize Cart nav links across pages: ensure they point to orders.html
+  try {
+    document.querySelectorAll('a.nav-link').forEach(function(a) {
+      if (!a) return;
+      const txt = (a.textContent || '').trim().toLowerCase();
+      if (txt === 'cart' || txt === 'orders') {
+        a.href = 'orders.html';
+      }
+    });
+  } catch (e) { /* ignore */ }
 });
 
 function updateHeaderForLoggedInUser(userInfo) {
@@ -44,8 +71,13 @@ async function logout() {
         await window.SessionManager.logout();
     } else {
         // Fallback logout
-        localStorage.clear();
-        window.location.href = 'login.html';
+    // Only remove auth-related keys to preserve cart and other user data
+    try {
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('adminInfo');
+      localStorage.removeItem('userRole');
+    } catch (e) { /* ignore */ }
+    window.location.href = 'login.html';
     }
 }
 
@@ -477,8 +509,7 @@ function orderNow() {
     // User is logged in, show order options
     showDeliveryOptions()
   } else {
-    // User not logged in, redirect to login
-    alert('Please login to place an order');
+    // User not logged in, redirect to login without blocking alert
     window.location.href = 'login.html';
   }
 }
@@ -533,16 +564,17 @@ function showDeliveryOptions() {
     `📞 **Hotline:** 0326238700\n\n` +
     `💡 **Tip:** Order through your preferred delivery app for the best experience!`
   
-  // Show delivery info and offer to create order
-  if (confirm(deliveryInfo + '\n\nWould you like to create an order now?')) {
-    createOrder();
-  }
+  // For a cleaner UX, navigate user to the Cart/Orders page so they can review
+  // details and confirm order there instead of using blocking confirm dialogs.
+  // Store brief delivery info in sessionStorage in case the orders page wants it.
+  try { sessionStorage.setItem('deliveryInfoPreview', deliveryInfo); } catch (e) { /* ignore */ }
+  window.location.href = 'orders.html';
 }
 
 // Function to create order with session management
 async function createOrder() {
   if (!window.SessionManager || !window.SessionManager.isLoggedIn()) {
-    alert('Please login to create an order');
+    // Replace blocking alert with a redirect to login
     window.location.href = 'login.html';
     return;
   }

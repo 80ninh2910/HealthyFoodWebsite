@@ -36,9 +36,13 @@ window.addEventListener("scroll", () => {
   lastScroll = currentScroll
 })
 
-// Utility function for formatting money
+// Utility function for formatting money as VND
 function formatMoney(amount) {
-    return '$' + amount.toFixed(2);
+  try {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  } catch (e) {
+    return amount + ' VND';
+  }
 }
 
 // Cart Management
@@ -114,23 +118,47 @@ function initializeModal() {
     });
 }
 
+// Listen for cart reset events (dispatched after successful login) and clear UI selections
+window.addEventListener('cart:reset', function () {
+  try {
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify([]));
+    // Update modal display if present
+    if (typeof updateCartDisplay === 'function') updateCartDisplay();
+    // Hide modal if open
+    if (typeof hideModal === 'function') hideModal();
+    // Remove any visual 'in-cart' or 'selected' markers on bowl cards/buttons
+    document.querySelectorAll('.bowl-card, .add-to-bag-btn, .add-to-cart, .add-to-bag-btn').forEach(el => {
+      el.classList.remove('in-cart');
+      el.classList.remove('selected');
+    });
+  } catch (e) {
+    console.error('Error handling cart:reset', e);
+  }
+});
+
 function addToBag(product) {
     // Lấy giỏ hàng từ localStorage
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
     
     // Kiểm tra sản phẩm đã tồn tại
-    const existingItem = cart.find(item => item.id === product.id);
-    if (existingItem) {
-        existingItem.qty = Math.min((existingItem.qty || 1) + 1, 99);
-    } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            qty: 1
-        });
-    }
+  // Normalize price to integer VND. If product.price looks like a small decimal (e.g. 12.99)
+  // assume it's a unit price in some currency and convert by *10000 => 129900 VND.
+  const rawPrice = Number(product.price) || 0;
+  const priceVND = (rawPrice > 0 && rawPrice < 1000) ? Math.round(rawPrice * 10000) : Math.round(rawPrice || 0);
+
+  const existingItem = cart.find(item => item.id === product.id);
+  if (existingItem) {
+    existingItem.qty = Math.min((existingItem.qty || 1) + 1, 99);
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: priceVND,
+      image: product.image,
+      qty: 1
+    });
+  }
 
     // Lưu vào localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -395,8 +423,9 @@ function showDeliveryOptions() {
     `10AM - 9PM Daily\n\n` +
     `📞 **Hotline:** 0326238700\n\n` +
     `💡 **Tip:** Order through your preferred delivery app for the best experience!`
-  
-  alert(deliveryInfo)
+  // Avoid blocking alert; navigate the user to the Cart/Orders page
+  try { sessionStorage.setItem('deliveryInfoPreview', deliveryInfo); } catch (e) { /* ignore */ }
+  window.location.href = 'orders.html';
 }
 
 // Catering Information Function
