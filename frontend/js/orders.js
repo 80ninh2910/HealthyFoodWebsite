@@ -198,6 +198,13 @@
                 cartCount.textContent = '0';
                 subtotalEl.textContent = this.formatMoney(0);
                 totalEl.textContent = this.formatMoney(0);
+                // Vô hiệu hóa nút tiến hành đặt hàng khi giỏ hàng trống
+                var proceedBtn = document.getElementById('proceedBtn');
+                if (proceedBtn) {
+                    proceedBtn.disabled = true;
+                    proceedBtn.classList.add('disabled');
+                    proceedBtn.title = 'Vui lòng thêm món ăn vào giỏ hàng';
+                }
                 return;
             }
 
@@ -249,6 +256,14 @@
             var deliveryFee = subtotal >= 300000 ? 0 : 30000; // Free delivery for orders over 300,000 VND
             var total = subtotal + deliveryFee;
 
+            // Kích hoạt lại nút tiến hành đặt hàng khi có sản phẩm
+            var proceedBtnActive = document.getElementById('proceedBtn');
+            if (proceedBtnActive) {
+                proceedBtnActive.disabled = false;
+                proceedBtnActive.classList.remove('disabled');
+                proceedBtnActive.title = '';
+            }
+
             // Update summary section
             subtotalEl.textContent = this.formatMoney(subtotal);
             
@@ -292,6 +307,11 @@
 
             if (proceedBtn) {
                 proceedBtn.addEventListener('click', function() {
+                    const cart = self.getCart();
+                    if (cart.length === 0) {
+                        self.showToast('Vui lòng thêm món ăn vào giỏ hàng');
+                        return;
+                    }
                     document.getElementById('cartSection').classList.add('hidden');
                     document.getElementById('deliverySection').classList.remove('hidden');
                     // Update progress indicator

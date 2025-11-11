@@ -10,42 +10,42 @@
     {
       "title": "B1 Healthy Bowl",
       "price": "89,000 VND",
-      "img": "../images/index/bowl-b1.jpg",
+      "img": "../../images/index/bowl-b1.jpg",
       "sales": 1247,
       "revenue": "111,083,000"
     },
     {
       "title": "B2 Balanced Bowl",
       "price": "95,000 VND",
-      "img": "../images/index/bowl-b2.jpg",
+      "img": "../../images/index/bowl-b2.jpg",
       "sales": 892,
       "revenue": "84,740,000"
     },
     {
       "title": "B3 Low-Cal Bowl",
       "price": "87,000 VND",
-      "img": "../images/index/bowl-b3.jpg",
+      "img": "../../images/index/bowl-b3.jpg",
       "sales": 1156,
       "revenue": "100,572,000"
     },
     {
       "title": "B4 Protein Bowl",
       "price": "92,000 VND",
-      "img": "../images/index/bowl-b4.jpg",
+      "img": "../../images/index/bowl-b4.jpg",
       "sales": 743,
       "revenue": "68,356,000"
     },
     {
       "title": "B5 High-Protein Bowl",
       "price": "98,000 VND",
-      "img": "../images/index/bowl-b5.jpg",
+      "img": "../../images/index/bowl-b5.jpg",
       "sales": 634,
       "revenue": "62,132,000"
     },
     {
       "title": "B6 Vegetarian Bowl",
       "price": "85,000 VND",
-      "img": "../images/index/bowl-b6.jpg",
+      "img": "../../images/index/bowl-b6.jpg",
       "sales": 1089,
       "revenue": "92,565,000"
     }

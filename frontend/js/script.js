@@ -55,7 +55,12 @@ function updateHeaderForLoggedInUser(userInfo) {
 }
 
 function updateHeaderForGuestUser() {
-    // Add login button to header
+    // Skip adding login button on Stores page
+    const pathname = (window.location.pathname || '').toLowerCase();
+    const isStoresPage = pathname.endsWith('stores.html') || document.body.classList.contains('stores-page');
+    if (isStoresPage) return;
+
+    // Add login button to header on other pages
     const header = document.querySelector('.header .container');
     if (header && !document.querySelector('.login-btn')) {
         const loginDiv = document.createElement('div');
@@ -479,7 +484,7 @@ function navigateToPage(page) {
       scrollToSection('.soumade-bowls-section')
       break
     case 'stores':
-      showStoreLocations()
+      window.location.href = 'stores.html'
       break
     case 'delivery':
       showDeliveryOptions()
@@ -500,7 +505,7 @@ function navigateToPage(page) {
 
 // Hero Section Functions
 function findStore() {
-  showStoreLocations()
+  window.location.href = 'stores.html'
 }
 
 function orderNow() {
@@ -520,36 +525,7 @@ function learnMoreCatering() {
 
 // Store Locations Function
 function showStoreLocations() {
-  const stores = [
-    {
-      name: "Soumaki District 1",
-      address: "42 Ly Tu Trong, District 1, HCMC",
-      phone: "0326238700",
-      hours: "10AM - 9PM Daily"
-    },
-    {
-      name: "Soumaki District 7",
-      address: "S27-1, Sky Garden 1, District 7, HCMC",
-      phone: "0326238700",
-      hours: "10AM - 9PM Daily"
-    },
-    {
-      name: "Soumaki District 2",
-      address: "250 Nguyen Van Huong, District 2, HCMC",
-      phone: "0326238700",
-      hours: "10AM - 9PM Daily"
-    }
-  ]
-  
-  let storeInfo = "📍 **Soumaki Store Locations:**\n\n"
-  stores.forEach((store, index) => {
-    storeInfo += `${index + 1}. **${store.name}**\n`
-    storeInfo += `   📍 ${store.address}\n`
-    storeInfo += `   📞 ${store.phone}\n`
-    storeInfo += `   🕒 ${store.hours}\n\n`
-  })
-  
-  alert(storeInfo)
+  window.location.href = 'stores.html';
 }
 
 // Delivery Options Function
